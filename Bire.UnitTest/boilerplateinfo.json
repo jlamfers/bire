@@ -1,0 +1,34 @@
+﻿/*
+  bla bla
+  */
+{
+  "id": "AF0D83D9-EC26-465E-A28E-4569B56855C3",
+  "title": "WCF service (CRUD)",
+  "description": "WCF service for simple CRUD management",
+  "author": "Mr. Test",
+  "truevalue": true,
+  "falsevalue": false,
+  "nullvalue": null,
+  "numvalue": -123.34E-6,
+  "escaped": "Sch\u00f6nen",
+
+  "comments": [
+    "free text",
+    "may include html tags",
+    "written above input fields"
+  ],
+
+  "fields": {
+    // test
+    "$name$": {
+      "prompt": "Project name:"
+    },
+    "$username$": /* oops */ {
+      "prompt": "Your name:"
+    },
+    "$date$": "#today()",
+    "$year$": "#year()",
+    "$month$": "#month()",
+    "$guid1$": "#guid()"
+  }
+}
