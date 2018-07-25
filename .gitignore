@@ -20,6 +20,7 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
+*.bat
 [Bb]in
 [Dd]ebug*/
 *.lib
@@ -31,5 +32,6 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 _nopush*/
 \packages/*
+\.vs/*
 !packages/repositories.config
 !nuget/nuget.exe
