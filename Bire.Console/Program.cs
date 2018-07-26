@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using cons = System.Console;
@@ -20,11 +21,10 @@ namespace Bire.Console
          _infoColor = ConsoleColor.Gray,
          _warningColor = ConsoleColor.DarkRed;
 
-
       static int Main(string[] consoleArgs)
       {
 
-         WriteLine(" *** Bire - Binary replace utility", _headerColor);
+         WriteLine($" *** Bire v{Version} - Binary replace utility", _headerColor);
          cons.WriteLine();
 
          try
@@ -191,6 +191,8 @@ namespace Bire.Console
 #endif
          }
       }
+
+      static string Version => string.Join(".", Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.').Take(3));
 
 
       private static bool IsZip(string filename)

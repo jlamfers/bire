@@ -59,7 +59,7 @@ namespace Bire
             _bufferIndex = 0;
          }
          var count = _stream.Read(_buffer[_bufferIndex], 0, _bufsize);
-         Eof = count < _bufsize || _stream.Position >= _stream.Length - 1;
+         Eof = _stream.Position >= _stream.Length - 1;
          _minIndex = Math.Max(_readCount - _bufsize, 0);
          _readCount += count;
          _maxIndex = _readCount - 1;

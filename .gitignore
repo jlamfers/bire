@@ -20,7 +20,6 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
-*.bat
 [Bb]in
 [Dd]ebug*/
 *.lib
@@ -33,5 +32,4 @@ _ReSharper*/
 _nopush*/
 \packages/*
 \.vs/*
-!packages/repositories.config
-!nuget/nuget.exe
+!Bire.Console/ILMerge.exe
