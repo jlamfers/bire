@@ -134,6 +134,7 @@ namespace Bire
             case "#guid()":
                return Guid.NewGuid().ToString("D");
             default:
+               
                return value;
          }
       }

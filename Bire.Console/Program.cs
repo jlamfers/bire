@@ -146,6 +146,10 @@ namespace Bire.Console
             // resolve any placeholders left
             replacements.ResolvePlaceholders();
 
+            // finally evaluate expressions in values like #lower(...), #upper(...) and #dashed(...)
+
+            replacements.EvaluatePlaceholderExpressions();
+
             if (!replacements.Any())
             {
                WriteLine($"Error: no replacements found in either argument -replace nor file {Constants.BoilerplateInfoFileName}",_errorColor);

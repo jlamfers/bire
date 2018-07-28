@@ -13,9 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bire.Console", "Bire.Consol
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Console", "Console", "{67F0F709-D7B7-4825-8521-85823A97BB55}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{DB5F6274-E9DA-4535-A741-69CDD649C213}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB5F6274-E9DA-4535-A741-69CDD649C213}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

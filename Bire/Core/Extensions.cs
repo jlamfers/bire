@@ -26,6 +26,37 @@ namespace Bire
          }
       }
 
+      public static void EvaluatePlaceholderExpressions<T>(this IList<T> fields)
+         where T : FieldValue
+      {
+         foreach (var field in fields)
+         {
+            var v = field.Value.Trim();
+            if (!v.StartsWith("#")) continue;
+            if (v.StartsWith("##"))
+            {
+               v = v.Substring(1);
+            }
+            else if (v.StartsWith("#lower("))
+            {
+               v = v.Substring(7, v.Length - 8).Trim().ToLower();
+            }
+            else if (v.StartsWith("#upper("))
+            {
+               v = v.Substring(7, v.Length - 8).Trim().ToUpper();
+            }
+            else if (v.StartsWith("#dashed("))
+            {
+               v = v.Substring(8, v.Length - 9).Trim().Dashed();
+            }
+            else
+            {
+               throw new Exception($"Invalid expressions: {field.Value}");
+            }
+            field.Value = v;
+         }
+      }
+
       public static void Merge<T>(this IList<T> self, IList<FieldValue> fields, bool resetPrompt = false)
          where T : FieldValue
       {
