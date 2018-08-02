@@ -53,6 +53,19 @@ namespace Bire
 
       private void FetchBytes()
       {
+         if (_stream.CanSeek)
+         {
+            FetchBytesCanSeek();
+         }
+         else
+         {
+            FetchBytesCannotSeek();
+         }
+      }
+
+
+      private void FetchBytesCanSeek()
+      {
          if (Eof) return;
          if (++_bufferIndex == BUF_COUNT)
          {
@@ -65,6 +78,35 @@ namespace Bire
          _maxIndex = _readCount - 1;
          FetchedLength = _readCount;
       }
+
+      byte? _forwardReadByte = null;
+
+      private void FetchBytesCannotSeek()
+      {
+         if (Eof) return;
+         if (++_bufferIndex == BUF_COUNT)
+         {
+            _bufferIndex = 0;
+         }
+         int count = 0;
+         if (_forwardReadByte == null)
+         {
+            count = _stream.Read(_buffer[_bufferIndex], 0, _bufsize);
+         }
+         else
+         {
+            count = _stream.Read(_buffer[_bufferIndex], 1, _bufsize - 1) + 1;
+            _buffer[_bufferIndex][0] = _forwardReadByte.Value;
+         }
+         var forwardReadByte = _stream.ReadByte();
+         Eof = forwardReadByte == -1;
+         _forwardReadByte = Eof ? null : (byte?)forwardReadByte;
+         _minIndex = Math.Max(_readCount - _bufsize, 0);
+         _readCount += count;
+         _maxIndex = _readCount - 1;
+         FetchedLength = _readCount;
+      }
+
 
       public bool Eof
       {

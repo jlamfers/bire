@@ -13,6 +13,7 @@ namespace Bire.Console
       public IList<string> SkipExtensions { get; set; }
       public string IgnoreExpression { get; set; }
       public bool ClearTarget { get; set; }
+      public bool Overwrite { get; set; }
       public IList<FieldValue> Replacements { get; set; }
    }
 }

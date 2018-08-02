@@ -13,9 +13,9 @@ namespace Bire.Console
          {
             return $@"
  usage: bire -from <directory-or-zip> [-to <target-directory-or-zip>][-replace<fields>]
-             [-clearTarget] [-skip <skip-extensions>] [-ignore <default | <ignore-regex>>]
+             [-clearTarget] [-overwrite] [-skip <skip-extensions>] [-ignore <default | <ignore-regex>>]
 
-    or: bire -scaffold <directory> [-to <zip-target>] [-ignore <ignore-regex>]
+    or: bire -scaffold <directory-or-zip> [-to <zip-target>] [-ignore <ignore-regex>]
  
  <directory-or-zip>        : existing directory or zip-file. it may contain a 
                              file named boilerplateinfo.json
@@ -23,7 +23,8 @@ namespace Bire.Console
  <fields>                  : space separated field-value pairs like {{<fieldname>=<fieldvalue>}}
                              all of these fields either override or fill up configured fields 
                              in boilerplateinfo.json
- -clearTarget              : target is cleared before build
+ -clearTarget              : target is fully cleared before build
+ -overwrite                : target is overwritten if it exists
  <skip-extensions>         : space separated file extensions (dot included like .exe) that do not 
                              need content processing but must be copied. Default is 
                              {string.Join(", ", Constants.DefaultSkipExtensions)}
@@ -43,13 +44,13 @@ namespace Bire.Console
       {
          if (args["-scaffold"] != null)
          {
-            if (args.NamedArgs.Where(kv => !new[] { "-to", "-scaffold", "-ignore" }.Contains(kv.Key)).Any())
+            if (args.NamedArgs.Where(kv => !new[] { "-to", "-scaffold", "-ignore", "-clearTarget", "-overwrite" }.Contains(kv.Key)).Any())
             {
                errorLineWriter("invalid args");
                errorLineWriter(GetUsage());
                return false;
             }
-            if (!Directory.Exists(args["-scaffold"]))
+            if (!Directory.Exists(args["-scaffold"]) && (!args["-scaffold"].ToLower().EndsWith(".zip") || !File.Exists(args["-scaffold"])))
             {
                errorLineWriter($"invalid source directory: {args["-scaffold"]}");
                return false;
@@ -57,7 +58,7 @@ namespace Bire.Console
             return true;
          }
 
-         var allowedArgNames = new HashSet<string>(new[] { "-from", "-to", "-replace", "-clearTarget", "-skip", "-ignore", "-scaffold" });
+         var allowedArgNames = new HashSet<string>(new[] { "-from", "-to", "-replace", "-clearTarget", "-skip", "-ignore", "-scaffold", "-overwrite" });
 
          var unknownArgs = args.NamedArgs.Where(kv => !allowedArgNames.Contains(kv.Key)).ToList();
 
@@ -86,6 +87,7 @@ namespace Bire.Console
          values.Replacements = ReplacementsParser.Parse(args.GetNamedArgs("-replace")?.ToArray());
          values.SkipExtensions = args.GetNamedArgs("-skip")?.ToList();
          values.ClearTarget = args.GetNamedArgs("-clearTarget") != null;
+         values.Overwrite = args.GetNamedArgs("-overwrite") != null;
          values.IgnoreExpression = args.GetNamedArgs("-ignore")?.FirstOrDefault();
          if (values.IgnoreExpression == "default")
          {
@@ -95,12 +97,7 @@ namespace Bire.Console
          if (args["-scaffold"] != null)
          {
             values.Source = args["-scaffold"];
-            values.Target = values.Target ?? values.Source;
-            if (!values.Target.ToLower().EndsWith(".zip"))
-            {
-               values.Target += ".zip";
-            }
-            values.ClearTarget = true;
+            values.Target = values.Target ?? "."; 
             values.IgnoreExpression = values.IgnoreExpression ?? Constants.DefaultIgnoreFilesExpression;
          }
 

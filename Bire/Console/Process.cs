@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
+
 namespace Bire.Console
 {
    public class Process
@@ -13,8 +14,9 @@ namespace Bire.Console
       private readonly IEnumerable<FieldValue> _replacements;
       private readonly IList<string> _skipExtensions;
       private readonly string _ignoreExpression;
+      private readonly bool _overwrite;
 
-      public Process(string source, string target, Action<LogItem> logger, IEnumerable<FieldValue> replacements, IList<string> skipExtensions, string ignoreExpression)
+      public Process(string source, string target, Action<LogItem> logger, IEnumerable<FieldValue> replacements, IList<string> skipExtensions, string ignoreExpression, bool overwrite)
       {
          _source = source;
          _target = target;
@@ -22,9 +24,10 @@ namespace Bire.Console
          _replacements = replacements;
          _skipExtensions = skipExtensions;
          _ignoreExpression = ignoreExpression;
+         _overwrite = overwrite;
       }
-      public Process(string source, Action<LogItem> logger, IEnumerable<FieldValue> replacements, IList<string> skipExtensions, string ignoreExpression)
-         : this(source,source,logger,replacements, skipExtensions, ignoreExpression)
+      public Process(string source, Action<LogItem> logger, IEnumerable<FieldValue> replacements, IList<string> skipExtensions, string ignoreExpression, bool overwrite)
+         : this(source,source,logger,replacements, skipExtensions, ignoreExpression, overwrite)
       {
         
       }
@@ -64,6 +67,11 @@ namespace Bire.Console
             try
             {
                _logger(LogItem.Info("packing scaffold..."));
+               if (_overwrite && File.Exists(_target))
+               {
+                  File.Delete(_target);
+
+               }
                ZipFile.CreateFromDirectory(tempFolderName, _target);
                return true;
             }
@@ -88,7 +96,17 @@ namespace Bire.Console
             try
             {
                _logger(LogItem.Info("creating folder..."));
-               ZipFile.ExtractToDirectory(tempFileName, _target);
+               if (!_overwrite)
+               {
+                  ZipFile.ExtractToDirectory(tempFileName, _target);
+               }
+               else
+               {
+                  using (var archive = ZipFile.OpenRead(tempFileName))
+                  {
+                     archive.ExtractToDirectory(_target, true);
+                  }
+               }
                return true;
             }
             finally

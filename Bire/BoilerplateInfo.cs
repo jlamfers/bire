@@ -143,7 +143,7 @@ namespace Bire
       {
          var nl = Environment.NewLine;
 
-         return $"{Title} - (c) {Author}{nl}{Description}" + (Comment != null ? $"{nl}{nl}{Comment}":"");
+         return $"{Title} - {Author}{nl}{Description}" + (Comment != null ? $"{nl}{nl}{Comment}":"");
       }
    }
 

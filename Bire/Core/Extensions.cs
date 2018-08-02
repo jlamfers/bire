@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,6 +128,30 @@ namespace Bire
          return string
             .Concat(self.Trim()
             .Select((x, i) => i > 0 && char.IsUpper(x) ? "-" + char.ToLower(x).ToString() : (i==0 ? char.ToLower(x).ToString() : x.ToString())));
+      }
+
+      public static void ExtractToDirectory(this ZipArchive archive, string destinationDirectoryName, bool overwrite)
+      {
+         if (!overwrite || !Directory.Exists(destinationDirectoryName))
+         {
+            archive.ExtractToDirectory(destinationDirectoryName);
+            return;
+         }
+         foreach (ZipArchiveEntry file in archive.Entries)
+         {
+            string completeFileName = Path.Combine(destinationDirectoryName, file.FullName);
+            if (string.IsNullOrEmpty(file.Name))
+            {
+               // Assuming Empty for Directory
+               var directoryName = Path.GetDirectoryName(completeFileName);
+               if (!Directory.Exists(directoryName))
+               {
+                  Directory.CreateDirectory(directoryName);
+               }
+               continue;
+            }
+            file.ExtractToFile(completeFileName, true);
+         }
       }
 
    }

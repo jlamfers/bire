@@ -59,7 +59,7 @@ namespace Bire.Console
             if (v.ClearTarget)
             {
 
-               if (Directory.Exists(v.Target))
+               if (!PathHelper.EqualPaths(".", v.Target) && Directory.Exists(v.Target))
                {
 
                   if (PathHelper.EqualPaths(v.Source, v.Target))
@@ -166,7 +166,7 @@ namespace Bire.Console
             WriteLine(" Scaffolding:",_titleColor);
             cons.WriteLine();
 
-            var process = new Process(v.Source, v.Target, WriteLogItem, replacements, v.SkipExtensions != null && v.SkipExtensions.Any() ? v.SkipExtensions : null, v.IgnoreExpression);
+            var process = new Process(v.Source, v.Target, WriteLogItem, replacements, v.SkipExtensions != null && v.SkipExtensions.Any() ? v.SkipExtensions : null, v.IgnoreExpression, v.Overwrite);
 
             var sw = new Stopwatch();
             sw.Start();
@@ -184,7 +184,7 @@ namespace Bire.Console
 
          catch (Exception ex)
          {
-            WriteLine($"{Environment.NewLine} unexpected error: { ex.Message}",_errorColor);
+            WriteLine($"{Environment.NewLine} error: { ex.Message}",_errorColor);
             return -1;
          }
          finally
